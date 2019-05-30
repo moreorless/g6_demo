@@ -1,0 +1,150 @@
+<html>
+<head>
+    <script src="../build/g6.js"></script>
+    <script src="../build/grid.js"></script>
+    <script src="../build/minimap.js"></script>
+    
+    <style type="text/css">
+        #mountNode { border: 1px solid seagreen }
+        
+        .myMinimap {
+            border: solid 1px #ccc;
+            position: absolute;
+            right: 0;
+            bottom: 0;
+        }
+
+        .myViewport {
+            border: solid 1px #ccc;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <button id="btn-print" onclick="printData()">打印图</button>
+    <button id="btn-print" onclick="getModel()">getModel</button>
+    <button id="btn-print" onclick="changeModel()">changeModel</button>
+</div>
+<div id="mountNode">
+</div>
+
+
+<script type="text/javascript">
+    const data = {
+        nodes: [{
+            id: 'node1',
+            x: 100,
+            y: 200,
+            shape: 'circle',
+            color: '#fa8c16',
+            label: 'node1',
+            labelCfg: {
+                position:'bottom',
+                offset: 5
+            },
+            bpmndata: {
+                "type": "serviceTask",    // startEvent | endEvent | serviceTask | userTask | exclusiveGateway
+                "class": "xxxx",
+                "inputparams":  [
+                    {
+                        "name": "inputparam1", 
+                        "type": "string", 
+                        "value": "${p.x}"
+                    },
+                    {
+                        "name": "inputparam2", 
+                        "type": "int", 
+                        "value": "${p.y}"
+                    },
+                ]
+            }
+            
+        },{
+            id: 'node2',
+            x: 300,
+            y: 200,
+            shape: 'rect',
+            style: {
+             fill: '#02ffff'
+            },
+            label: 'node2'
+        },{
+            id: 'node3',
+            x: 300,
+            y: 100,
+            size: [60, 30],
+            shape: 'ellipse',
+            label: 'node3',
+        },{
+            id: 'node4',
+            x: 400,
+            y: 100,
+            shape: 'image',
+            img: 'https://gw.alipayobjects.com/zos/rmsportal/XuVpGqBFxXplzvLjJBZB.svg',
+            label: 'node4:image',
+        }],
+        edges: [{
+            source: 'node1',
+            target: 'node2'
+        }]
+    }
+
+    const minimap = new Minimap({ 
+        size: [200, 150], 
+        type: 'default', 
+        className: 'myMinimap',
+        viewportClassName: 'myViewport'
+    });
+
+    const grid = new Grid();
+
+    const graph = new G6.Graph({
+        container: 'mountNode',
+        width: 800,
+        height: 600,
+        plugins: [ minimap, grid ],
+        modes: { // 支持的 behavior
+            default: ['drag-node','click-select', 'drag-canvas']
+            }
+        });
+
+    graph.data(data);
+    graph.render();
+
+    graph.on('node:click', ev => {
+        console.log("node click:  node is ", ev.item._cfg.id);
+    });
+    graph.on('edge:click', ev => {
+        console.log("edge click:  node is ", ev.item._cfg.id);
+    });
+
+    function printData(){
+        console.log(graph.save());
+    }
+
+    function getModel(){
+        var node1 = graph.findById('node1');
+        console.log('node1 model', node1.getModel());
+    }
+
+    function changeModel(){
+        console.log('change model');
+        var node1 = graph.findById('node1');
+        var model1 = {
+            bpmndata: {
+                "type": "serviceTask",    // startEvent | endEvent | serviceTask | userTask | exclusiveGateway
+                "class": "yyy",
+                "inputparams": []
+                },
+            newitem: {
+                "name": "new item"
+            }
+        };
+        graph.update('node1', model1);
+
+        console.log('node1 model', node1.getModel());
+    }
+</script>
+</body>
+
+</html>
