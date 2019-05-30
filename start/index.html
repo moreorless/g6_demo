@@ -15,15 +15,16 @@
         }
 
         .myViewport {
-            border: solid 1px #ccc;
+            border: 1px solid #ccc;
+            /*8background: #cadcf5;*/
         }
     </style>
 </head>
 <body>
 <div>
     <button id="btn-print" onclick="printData()">打印图</button>
-    <button id="btn-print" onclick="getModel()">getModel</button>
-    <button id="btn-print" onclick="changeModel()">changeModel</button>
+    <button id="btn-model" onclick="getModel()">getModel</button>
+    <button id="btn-changemodel" onclick="changeModel()">changeModel</button>
 </div>
 <div id="mountNode">
 </div>
@@ -43,7 +44,7 @@
                 offset: 5
             },
             bpmndata: {
-                "type": "serviceTask",    // startEvent | endEvent | serviceTask | userTask | exclusiveGateway
+                "type": "serviceTask", 
                 "class": "xxxx",
                 "inputparams":  [
                     {
@@ -122,20 +123,28 @@
         console.log(graph.save());
     }
 
+    /**
+    * 获取数据模型
+    */ 
     function getModel(){
         var node1 = graph.findById('node1');
         console.log('node1 model', node1.getModel());
     }
 
+    /**
+    * 修改数据模型
+    */
     function changeModel(){
         console.log('change model');
         var node1 = graph.findById('node1');
         var model1 = {
-            bpmndata: {
-                "type": "serviceTask",    // startEvent | endEvent | serviceTask | userTask | exclusiveGateway
+            // 修改已有数据项
+            bpmndata: {    
+                "type": "serviceTask",
                 "class": "yyy",
                 "inputparams": []
                 },
+            // 增加新的数据项
             newitem: {
                 "name": "new item"
             }
